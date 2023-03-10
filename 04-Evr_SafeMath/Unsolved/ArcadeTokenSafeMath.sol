@@ -1,44 +1,35 @@
-/*
-SafeMath
-*/
+pragma solidity ^0.5.17;
 
-pragma solidity ^0.5.0;
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/math/SafeMath.sol";
 
-// @TODO: import the SafeMath library via Github URL
-
-
-contract ArcadeToken {
-    // @TODO: add the "using SafeMath..." line here to link the library to all uint types
-
+contract AcradeToken {
+    using SafeMath for uint;
 
     address payable owner = msg.sender;
     string public symbol = "ARCD";
-    uint public exchange_rate = 100;
+    uint public exchangeRate = 100;
 
-    mapping(address => uint) balances;
+    mapping(address => uint) balances; //accepts an account address as key and account balance as value. where the value is an uint
 
-    function balance() public view returns(uint) {
+    function balance() public view returns(uint){
         return balances[msg.sender];
     }
 
-    function transfer(address recipient, uint value) public {
-        // @TODO: replace the following with the .sub function
-        balances[msg.sender] -= value;
-        // @TODO: replace the following with the .add function
-        balances[recipient] += value;
+    function transfer(address recipient, uint value) public{
+        balances[msg.sender] = balances[msg.sender].sub(value);
+        balances[msg.sender] = balances[recipient].add(value);
     }
 
     function purchase() public payable {
-        // @TODO: replace the following with the .mul function
-        uint amount = msg.value * exchange_rate;
-        // @TODO: replace the following with the .add function
-        balances[msg.sender] += amount;
+        uint amount = msg.value.mul(exchangeRate);
+        balances[msg.sender] = balances[msg.sender].add(amount);
         owner.transfer(msg.value);
-    }
+    } 
 
     function mint(address recipient, uint value) public {
-        require(msg.sender == owner, "You do not have permission to mint tokens!");
-        // @TODO: replace the following with the .add function
-        balances[recipient] += value;
+        require(msg.sender == owner, "you are not allowed to mint tokens");
+        balances[recipient] = balances[recipient].add(value);
     }
+
+
 }
